@@ -1,0 +1,53 @@
+repeat wait(0.25) until game:IsLoaded() wait(0.5)
+
+if game.PlaceId == 3016661674 or game.GameId ~= 1087859240 then return end
+
+local snakeSpawnTime = workspace:WaitForChild("MonsterSpawns"):WaitForChild("Triggers"):WaitForChild("CastleRockSnake"):WaitForChild("LastSpawned")
+local Deep4SpawnTime = workspace:WaitForChild("MonsterSpawns"):WaitForChild("Triggers"):WaitForChild("evileye1"):WaitForChild("LastSpawned")
+local SunkenSpawnTime = workspace:WaitForChild("MonsterSpawns"):WaitForChild("Triggers"):WaitForChild("evileye2"):WaitForChild("LastSpawned")
+local SnakepitSpawnTime = workspace:WaitForChild("MonsterSpawns"):WaitForChild("Triggers"):WaitForChild("MazeSnakes"):WaitForChild("LastSpawned")
+local CryptSpawnTime = workspace:WaitForChild("MonsterSpawns"):WaitForChild("Triggers"):WaitForChild("CryptTrigger"):WaitForChild("LastSpawned")
+
+local lb = Drawing.new("Text")
+function SecondsToClock(seconds)
+  local seconds = tonumber(seconds)
+
+  if seconds <= 0 then
+    return "00:00";
+  else
+    hours = string.format("%02.f", math.floor(seconds/3600));
+    mins = string.format("%02.f", math.floor(seconds/60));
+    secs = string.format("%02.f", math.floor(seconds - mins *60));
+    return mins.."m "..secs.. "s"
+  end
+end
+
+local hidden = false
+
+game:GetService("UserInputService").InputBegan:Connect(function(key,typing)
+    if key.KeyCode == Enum.KeyCode.L and not typing then 
+        if hidden == true then
+            hidden = false
+            lb.Transparency = 0
+        elseif hidden == false then 
+            hidden = true
+            lb.Transparency = 1
+        end
+    end
+end)
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    local delta = os.time() - snakeSpawnTime.Value
+    local delta4 = os.time() - SunkenSpawnTime.Value
+    local delta3 = os.time() - Deep4SpawnTime.Value
+    local delta2 = os.time() - SnakepitSpawnTime.Value
+    local delta5 = os.time() - CryptSpawnTime.Value
+    local vf = workspace.CurrentCamera.ViewportSize
+    lb.Text = "Castle Spawned: " .. SecondsToClock(delta) .. "\nTOF Spawned: " .. SecondsToClock(delta2) .. "\nDeep4 Spawned: " .. SecondsToClock(delta3) .. "\nBastion Spawned: " .. SecondsToClock(delta4) .. "\nCrypt Spawned: " .. SecondsToClock(delta5)
+    lb.Outline = true
+    lb.Visible = true
+    lb.Color = Color3.new(1,1,1)
+    lb.ZIndex = 3
+    lb.Size = 20
+    lb.Position = Vector2.new(10, vf.Y - lb.TextBounds.Y - 81)
+end)
